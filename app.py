@@ -133,7 +133,7 @@ def kaggle_results():
                          search_term="Kaggle Leaderboard")
 
 # Expose the app to the internet using ngrok
-ngrok.set_auth_token("2tRnHsZCARZ9SUabqPEIEYTOmW2_63JNxNvKAEpGQY1h5cFXB")
+ngrok.set_auth_token(os.environ["NGROK_AUTH_TOKEN"])
 public_url = ngrok.connect(5000)
 print(f' * ngrok tunnel "{public_url}" -> "http://127.0.0.1:5000"')
 
