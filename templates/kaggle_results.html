@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-outline-primary mb-4">
+        <i class="bi bi-arrow-left-circle"></i> Return to Search
+    </a>
+
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body">
+            <h3 class="mb-4">Kaggle Users with Contact Info</h3>
+            <p class="text-muted">From competition: {{ search_term }}</p>
+
+            {% if users %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 20%">Name</th>
+                            <th style="width: 35%">Bio</th>
+                            <th style="width: 20%">LinkedIn</th>
+                            <th style="width: 25%">Websites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>
+                                <a href="https://www.kaggle.com/{{ user.username }}"
+                                   target="_blank"
+                                   class="text-decoration-none fw-bold">
+                                    {{ user.name }}
+                                </a>
+                            </td>
+                            <td class="text-break">{{ user.bio }}</td>
+                            <td>
+                                {% if user.linkedin != "N/A" %}
+                                <a href="{{ user.linkedin }}"
+                                   target="_blank"
+                                   class="text-decoration-none d-inline-block">
+                                    <span class="badge bg-primary">LinkedIn Profile</span>
+                                </a>
+                                {% else %}
+                                <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.websites %}
+                                    <div class="d-grid gap-1">
+                                    {% for site in user.websites %}
+                                        <a href="{{ site }}"
+                                           target="_blank"
+                                           class="text-decoration-none d-block">
+                                            <span class="badge bg-success">Website #{{ loop.index }}</span>
+                                        </a>
+                                    {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-warning mt-3">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                No users with contact information found in first 100 entries
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
