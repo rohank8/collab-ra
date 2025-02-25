@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-outline-primary mb-4">
+        <i class="bi bi-arrow-left-circle"></i> Return to Search
+    </a>
+
+    <h3 class="mb-3">GitHub Results for "{{ search_term }}"</h3>
+
+    {% if results.results %}
+    <div class="alert alert-info">
+        Page {{ results.page }} of {{ results.total_pages }}
+        ({{ results.total }} total matches)
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for user in results.results %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-light">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ user.avatar_url }}"
+                             class="rounded-circle me-2"
+                             width="45"
+                             height="45"
+                             alt="{{ user.username }} avatar">
+                        <div>
+                            <a href="{{ user.profile_url }}"
+                               target="_blank"
+                               class="text-decoration-none fw-bold text-dark">
+                                {{ user.name or user.username }}
+                            </a>
+                            {% if user.location %}
+                            <div class="text-muted small mt-1">
+                                <i class="bi bi-geo-alt"></i> {{ user.location }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    {% if user.bio %}
+                    <p class="card-text text-muted small">
+                        {{ user.bio|truncate(200) }}
+                    </p>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        {% if user.linkedin %}
+                        <a href="{{ user.linkedin }}"
+                           target="_blank"
+                           class="btn btn-sm btn-linkedin mb-2 me-1">
+                           <i class="bi bi-linkedin"></i> LinkedIn
+                        </a>
+                        {% endif %}
+
+                        {% for site in user.websites %}
+                        <a href="{{ site }}"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary mb-2 me-1">
+                           <i class="bi bi-globe"></i> Website
+                        </a>
+                        {% endfor %}
+
+                        {% for email in user.emails %}
+                        <a href="mailto:{{ email }}"
+                           class="btn btn-sm btn-outline-dark mb-2 me-1">
+                           <i class="bi bi-envelope"></i> {{ email }}
+                        </a>
+                        {% endfor %}
+                    </div>
+
+                    {% if user.matching_repos %}
+                    <h6 class="text-muted mb-3">Matching Repositories:</h6>
+                    <div class="list-group">
+                        {% for repo in user.matching_repos %}
+                        <a href="{{ repo.url }}"
+                           target="_blank"
+                           class="list-group-item list-group-item-action small py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>{{ repo.name }}</span>
+                                <span class="badge bg-info rounded-pill">
+                                    {{ repo.matches|length }} matches
+                                </span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-footer text-muted small">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    Match Score: {{ user.score }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if results.page > 1 %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?q={{ search_term|urlencode }}&page={{ results.page - 1 }}">
+                   Previous
+                </a>
+            </li>
+            {% endif %}
+
+            {% for p in range(1, results.total_pages + 1) %}
+            <li class="page-item {% if p == results.page %}active{% endif %}">
+                <a class="page-link"
+                   href="?q={{ search_term|urlencode }}&page={{ p }}">
+                   {{ p }}
+                </a>
+            </li>
+            {% endfor %}
+
+            {% if results.page < results.total_pages %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?q={{ search_term|urlencode }}&page={{ results.page + 1 }}">
+                   Next
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% else %}
+    <div class="alert alert-warning mt-3">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        No developers found matching "{{ search_term }}"
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid rgba(0,0,0,0.125);
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    }
+    .btn-linkedin {
+        background-color: #0A66C2;
+        color: white;
+    }
+    .btn-linkedin:hover {
+        background-color: #084d94;
+    }
+    .badge {
+        font-size: 0.75em;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const loading = document.getElementById('global-loading');
+
+    document.querySelectorAll('.page-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            loading.classList.remove('d-none');
+
+            fetch(e.target.href)
+                .then(response => response.text())
+                .then(html => {
+                    document.open();
+                    document.write(html);
+                    document.close();
+                })
+                .catch(() => {
+                    window.location.href = e.target.href;
+                });
+        });
+    });
+});
+</script>
+{% endblock %}
