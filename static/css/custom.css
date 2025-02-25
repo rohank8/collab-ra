@@ -1,0 +1,58 @@
+/* Main Background */
+body {
+    background-color: #030f2b;
+    color: #ffffff;
+}
+
+/* Logo Container */
+.logo-container {
+    background-color: white;
+    padding: 2rem;
+    margin: -2rem -2rem 3rem -2rem;
+    border-radius: 0 0 2rem 2rem;
+    box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.1);
+}
+
+/* Logo Text */
+.logo-text {
+    font-family: Garamond, "Times New Roman", serif;
+    font-size: 2.5rem;
+    color: #030f2b;
+    line-height: 1.1;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+/* Search Cards */
+.search-section {
+    background: white !important;
+    color: #030f2b;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.1);
+}
+
+/* Input Fields */
+.form-control {
+    border: 1px solid #dee2e6 !important;
+}
+
+/* Kaggle Table Styling */
+.table-bordered {
+    border: 1px solid #dee2e6 !important;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6 !important;
+}
+
+.table thead th {
+    background-color: #051841;
+    color: white;
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(5, 24, 65, 0.05);
+}
