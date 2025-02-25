@@ -14,8 +14,7 @@ logging.basicConfig(level=logging.INFO)
 class GitHubSearch:
     def __init__(self):
         self.token = os.environ.get("GITHUB_TOKEN", "")
-        if not self.token:
-            print("Warning: GITHUB_TOKEN is not set. Some GitHub API calls may fail.")
+        print(f"DEBUG: GITHUB_TOKEN is {self.token[:6]}...")
         self.headers = {'Authorization': f'token {self.token}'}
         self.base_api = 'https://api.github.com'
         self.max_workers = 4
@@ -198,9 +197,10 @@ class GitHubSearch:
         return None
 
     def _process_query(self, raw_query):
-        processed = re.sub(r'\\s*\\+\\s*', ' ', raw_query)
-        processed = re.sub(r'(\\b\\w+\\b)\\s+OR\\s+(\\b\\w+\\b)', r'\\1 OR \\2', processed)
-        return re.sub(r'[^\w\\s:+OR_\\-"@]', '', processed).strip()
+        processed = re.sub(r'\s*\+\s*', ' ', raw_query)
+        processed = re.sub(r'(\b\w+\b)\s+OR\s+(\b\w+\b)', r'\1 OR \2', processed)
+        pattern = r'[^\w\s:\+OR_\-\"@]'
+        return re.sub(pattern, '', processed).strip()
 
     def _extract_search_terms(self, raw_query):
         terms = []
