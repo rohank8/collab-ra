@@ -119,7 +119,7 @@ class GitHubSearch:
         }
 
     def _calculate_score(self, social, repos):
-        score = 3 if social['linkedin'] else 0
+        score = 7 if social['linkedin'] else 0
         score += 2 * len(social['websites'])
         score += 1 * len(social['emails'])
         score += sum(len(repo['matches']) for repo in repos)
