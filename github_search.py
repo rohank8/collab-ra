@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from decouple import config
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import quote
+import os
 
 logging.basicConfig(level=logging.INFO)
 
